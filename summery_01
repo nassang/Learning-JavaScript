@@ -15,6 +15,17 @@
   -> (해결)NUMBER객체에 프로퍼티(입실론) a.EPSILON => 0.2를 0.2로 인식하게 
   
   * 이스케이프(\) : 문자열("" 혹은'') 안에서 
-  ex) let str = " \"쌍따\", '\작따\', \\(역슬레쉬)";    // "쌍따", '작따', \(역슬레쉬)
+  ex) let str = "\"쌍따\", '\작따\', \\(역슬레쉬)";    // "쌍따", '작따', \(역슬레쉬)
   
+  * 특수문자(/r) : 캐리지 리턴(앞 공백을 없애고 맨 앞으로 정렬)
+  ex) let str = "LINE1\r\n   Line2";   // LINE1
+                                          LINE2
+  
+  * 백틱(`) : 이스케이프 없이 사용가능
+  ex) let str = `New in ES6 \` strings.`;   // New in ES6 ` strings.
+  
+  * 심볼 : 고유식별자 -> 항상 유일한 값을 표현
+  ex) const color1 = "RED";       |     const color1 = Symbol("RED");  
+      const color2 = "RED";       |     const color2 = Symbol("RED");
+       (color1 == color2)         |          (color1 != color2)
   
