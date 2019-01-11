@@ -24,8 +24,20 @@
   * 백틱(`) : 이스케이프 없이 사용가능
   ex) let str = `New in ES6 \` strings.`;   // New in ES6 ` strings.
   
-  * 심볼 : 고유식별자 -> 항상 유일한 값을 표현
-  ex) const color1 = "RED";       |     const color1 = Symbol("RED");  
-      const color2 = "RED";       |     const color2 = Symbol("RED");
-       (color1 == color2)         |          (color1 != color2)
-  
+  * 심볼(Symbol) : 고유식별자 -> 항상 유일한 값을 표현
+  ex) const normal1 = "RED";       |     const symbol1 = Symbol("RED");  
+      const normal2 = "RED";       |     const symbol1 = Symbol("RED");
+      (normal1 == normal2)         |         (symbol1 != symbol1)
+ 
+ # CHAPTER.4 제어문
+  [제어문]
+  - for문 : 범주O/인덱스O
+  - while문 : 범주X/인덱스X
+  - do-while문 : 무조건 한번은 실행
+  - if-else문 : 여러조건 중 택1
+  - swith문 : 조건하나로 여러 케이스
+  - for in문 : 객체{} 프로퍼티 루프 ex) for(let data in {str:"aa", str2:"bb"})
+  - for of문 : 컬랙션 요소 루프(ES6) ex) for(let data of ["aa", "bb", "cc"])
+   * for of문은 배열은 물론 iterable객체에 모두 사용가능..?
+  - break : 블록을 빠져나옴
+  - continue : 현재 블록 스킵
