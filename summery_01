@@ -38,6 +38,78 @@
   - swith문 : 조건하나로 여러 케이스
   - for in문 : 객체{} 프로퍼티 루프 ex) for(let data in {str:"aa", str2:"bb"})
   - for of문 : 컬랙션 요소 루프(ES6) ex) for(let data of ["aa", "bb", "cc"])
-   * for of문은 배열은 물론 iterable객체에 모두 사용가능..?
+    * for of문은 배열은 물론 iterable객체에 모두 사용가능..?
   - break : 블록을 빠져나옴
   - continue : 현재 블록 스킵
+
+# CHAPTER.5 표현식과 연산자
+ [표현식]
+ - 명시적인 값이 있는 문
+ ex) let x;    //선언문
+     x = 3*5;  //표현식
+
+ [연산자]
+ - 전위연산 : ++x --x :선 연산, 후 할당
+ - 후위연산 : x++ x-- :선 할당, 후 연산 
+ 
+ ex) let x = 2;
+     const r1 = x++ + x++;
+           r1 = 2 + x++;  //좌측 x에 2를 할당 후 x값 증가(현재x = 3)
+           r1 = 2 + 3;    //우측 x에 3을 할당 후 x값 증가(현재x = 4)
+           r1 = 5;
+           
+     const r2 = ++x + ++x;
+           r2 = 5 + ++x; //현재 x값(4)에서 증가 후(5) 할당(현재x = 5)
+           r2 = 5 + 6;   //현재 x값(5)에서 증가 후(6) 할당(현재x = 6)
+           r2 = 11;
+           
+ - 비교연산 (==)동등/(===)일치
+   * 동등연산자 사용 시 (0, null, undefined, "")값 비교는 권장하지 않음
+   * 객체는 항상 다름
+   ex) const str1 = {name:"test"};
+       const str2 = {name:"test"};
+             str1 == str2  //false
+             str1 === str2 //false
+   
+   * 자바스크립트의 데이터 형식 : (참 같은 값/거짓 같은 값)
+   * 아래 나열한 거짓 같은 값을 제외하면 모두 참 같은 값
+     - undefined 
+     - null 
+     - false 
+     - 0 
+     - NaN 
+     - ''(빈문자열)
+     
+   * 거짓같지만 참인 값
+    - 모든 객체
+    - value of() 메서드에서 반환하는 false
+    - "false"(문자열)
+    - " "(공백있는 문자열)
+    
+ - 단축평가 : 피연산자의 부수효과 기대
+   ex) const trueOrFalse = true;
+       let x = 0;
+       const result1 = trueOrFalse || x++;  //treuOrFalse값이 true이기 떄문에 충족 || 뒤로 연산이 가지 않음
+             result1 = trueOrFalse;
+             result1 = true;
+             
+       const trueOrFalse2 = false;
+       let y = 0;
+       const result2 = trueOrFalse2 || y++;  //treuOrFalse2값이 false 떄문에 불충족 || 뒤로 연산이 감
+             result2 = y++;
+             result2 = 0;
+
+ - 해체할당 : ES6신규! => 변수이름과 객체의 프로퍼티 이름을 맞추면 분배가능
+   ex) const obj = {b:2, c:3, d:4};
+       const {a, b, c} = obj;
+       //a : obj프로퍼티 중 식별자 a와 일치하는게 없음 -> undefined
+       //b : obj프로퍼티 중 식별자 b와 일치 -> 2
+       //c : obj프로퍼티 중 식별자 c와 일치 -> 3
+       //d : obj프로퍼티 중 식별자 d는 정의되지 않음
+    
+    *확산연산자(...) : 나머지 요소를 저장
+   ex) const arr = [1, 2, 3, 4, 5];
+       let [x, y, ...rest] = arr; 
+       x;       //배열의 순서대로 1을 할당
+       y;       //배열의 순서대로 2를 할당
+       rest;    //배열의 나머지 3,4,5를 할당
