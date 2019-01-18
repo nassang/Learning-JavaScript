@@ -111,3 +111,151 @@
     ex) const arr = ["a", "b", "c", "d"];
         arr.join("+");    //"a+b+c+d"
         arr.join(",");    //"a,b,c,d"
+
+
+# CHAPTER.9 객체와 객체지향 프로그래밍
+ [for...in]
+  - 객체프로퍼티를 나열
+    ex) const SYM = Symbol();
+        const obj = {a:1, b:2, c:3, [SYM]:4};
+        
+        for(let prop in obj){
+          if(!obj.hasOwnProperty(prop)) continue;     
+          console.log(`${prop}: ${obj[prop]}`);   
+          //a: 1
+          //b: 2
+          //c: 3
+          //undefined  => p.93 심볼 프로퍼티는 기본적으로 표시되지 않는다.         
+        }
+ 
+ [Object.keys]
+  - 객체의 문자열 프로퍼티를 배열로 반환
+    ex) const SYM = Symbol();
+        const obj = {a:1, b:2, c:3, [SYM]:4};
+        Object.keys(obj).forEach(prop => console.log(`${prop}: ${obj[prop]}`));
+          //a: 1
+          //b: 2
+          //c: 3
+          //undefined  => p.93 심볼 프로퍼티는 기본적으로 표시되지 않는다. 
+          
+ [객체지향 프로그래밍]
+  - 객체(특정사물)와 기능을 논리적으로 묶어 놓은 것(자동차-구른다/비행기-난다)
+    ex)
+    
+    //클래스 : 추상적 사물을 정의(Car 전체적인 Car를 지칭)
+    #1 정의 
+    class Car {  
+      constructor(){}
+    }
+    
+    //인스턴스 : 특정 사물을 정의(Car의 하위 개념)
+    const myCar = new Car();   // myCar instanceOf Car (true) : myCar는 Car의 인스턴스이다.
+    const yourCar = new Car();  
+    
+    #2 구체화
+    class Car {
+      constructor(make, model){  //클래스 Car에는 make와 model이 정의되고 userGear는 P로 초기화
+        this.make = make;
+        this.model = model;
+        this.userGears = ['P','N','R','D'];
+        this.userGear = this.userGears[0];
+      }
+      
+      shift(gear){
+        if(this.userGears.indexOf(gear) < 0);
+          throw new Error(`Invalid gear: ${gear}`); //매개변수로 들어온 gear값이 userGears에 없으면 error
+        this.userGear = gear;                      //this는 해당 메서드를 호출하는 인스턴스와 묶는 키워드
+      }
+    }
+    
+    const myCar = new Car("Tesla", "Model S"); //myCar에 제조사와 모델명 부여
+    const yourCar = new Car("Tesla", "Model 3");
+    myCar.shift('D');  //myCar의 userGear를 D로 변경
+    yourCar.shift('R');  
+    
+    ▶ 잘못된 기어 선택 방지의 취약점
+    myCar.shift('X')       //잘못된 기어 : error발생 
+    myCar.userGear = 'X';  //잘못된 기어 : 허용됨
+    userGear => _userGear  // _ 를 사용하여 명시적으로 접근제한을 둔다.
+    myCar._userGear = 'X'; //하지만 여전히 접근이 가능
+    
+    ▶ weakMap을 사용하면 해당 프로퍼티를 안전하게 지킬 수 있음(정리 생략:10장)
+ 
+ [프로토타입]
+  - 클래스의 인스턴스에서 사용할 수 있는 메서드 : 프로토타입 메서드
+    ex) Car 클래스의 shift 메서드 => Car.prototype.shift => Car#shift
+    : Car클래스의 인스턴스 myCar, yourCar는 모두 프로토타입을 공유, 접근이 가능
+      Car클래스의 프로토타입은 권장하지 않음 : 공통소스를 고치는 것과 같음 : sideEffect우려
+    
+   ▶ 자바스크립트의 프로퍼티 접근
+   : (동일한 메서드가 있다는 가정하에) 인스턴스 체크 > 프로토타입 체크
+   
+ [정적 메서드]
+  - 인스턴스와는 별개로 범용적인 작업에 사용 : 여러 인스턴스를 대상으로 하는 작업에 어울림
+   :정적 메서드는 인스턴스가 아닌 클래스 자체에 묶인다.
+   ex) 
+   class Car {
+     static getNextVin(){
+       return Car.nextVin++;   //this.nextVin이라고 사용하지 않는 이유는 정적메서드임을 나타내기 위함
+     }
+   }
+   
+   constructor(){
+     this.vin = Car.getNextVin();
+   }
+   
+   Car.nextVin = 0;  //Car의 vin번호 초기화
+   
+   //car가 생성될때 마다 vin번호가 부여된다 : 여러 인스턴스(car1~car3)를 대상으로
+   const car1 = new Car();  //car1.vin : 0
+   const car2 = new Car();  //car1.vin : 1
+   const car3 = new Car();  //car1.vin : 2
+   
+ [상속]
+  - 상위클래스의 기능을 하위 클래스가 모두 공유하는것
+    ex)
+    //탈것의 정의 (Vihicle > Car > myCar == yourCar)
+    class Vehicle {
+      constructor(){
+        this.passenger = [];
+      }
+      
+      addPassenger(p){
+         this.passenger.push(p);
+      }
+    }
+    
+    //Car클래스는 이제부터 탈것의 기능을 공유
+    //class Vehicle은 상위 클래스 <> class Car는 하위 클래스
+    class Car extends Vehicle{
+      constructor(){
+        super();  //슈퍼클래스(Vehicle)의 생성자를 호출하는 함수 : 서브클래스에서 필수(없으면 error!)
+      }
+      deployAirbag(){
+        console.log("boom");
+      }
+    }
+    
+    const v = new Vehicle();
+    v.addPassenger("caren"); 
+    
+    const c = new Car();
+    c.addPassenger("jack"); //Car클래스는 해당 메서드가 없지만 슈퍼클래스의 메서드를 공유받아 기능 수행
+    c.deployAirbag();  //"boom"
+    v.deployAirbag();  //error  상위 클래스가 하위 클래스에 접근하는건 안된다
+ 
+ [다형성]
+  - 여러 슈퍼클래스의 맴버인 인스턴스를 가리키는 말(각각의 클래스(사물)엔 다양한 인스턴스(기능) 존재)
+  
+ [객체프로퍼티 나열]
+  - ES6 클래스를 설계 의도대로 사용하려면 데이터 프로퍼티는 항상 프로토타입이 아닌 인스턴스에 정의하는게 좋다.
+  
+ [다중상속, 믹스인]
+  - 다중상속 : 하나의 클래스가 두개의 슈퍼클래스를 가지는 것
+    *문제점1 : 각 클래스별 요소간의 충돌(동일한 메서드명 등)
+    *문제점2 : 그럼에도 불구하고 다중상속이 필요한 케이스 존재
+    
+  - 해결책 : 믹스인(기능을 필요한 만큼만 섞어놓음)
+  
+    
+  
