@@ -1,0 +1,113 @@
+# CHAPTER.8 배열과 배열 처리
+ [배열]
+  - 객체와 달리 순서가 있는 데이터의 집합
+  - 배열의 요소는 다양한 타입이 될 수 있다(비균질적)
+    ex) let arr = [1, 'a', {aa:1, bb:2}, ['x','y']];   //숫자, 문자, 객체, 배열 등 다양한 타입이 담김
+  - 리터럴은 []로 만들고 인덱스 요소에 접근할때도 []사용 
+    ex) let arr = ['a','b'];    //리터럴 생성
+        let fstArr = arr[0];    //배열 요소에 접근
+ 
+ [배열 요소 조작]
+ * 배열 메서드 중 일부는 배열 자체를 (수정), 일부는 새 배열을 (반환)
+  ====배열 자체가 수정 됨====
+  let basicArr = ['a','b','c']; //선언문
+  
+  - push : 배열의 (끝)에 요소 추가(길이 반환/인덱스 반환이 아님)
+    ex) basicArr.push('d');    //4  => ['a','b','c','d']   배열에 d추가
+  
+  - pop : 배열의 (끝)에 요소 제거(제거 요소 반환)
+    ex) basicArr.pop();     //'d' => ['a','b','c']   배열의 마지막 d제거   
+    
+  - unshift : 배열의 (앞)에 요소 추가(길이 반환)
+    ex) basicArr.unshift('x');  //4 => ['x','a','b','c']  배열의 첫번째에 x추가
+  
+  - shift : 배열의 (앞)에 요소 제거(저거 요소 반환)
+    ex) basicArr.shift(); // 'x' => ['a','b','c']  배열의 첫번째 x제거
+  
+  ====배열 자체는 변하지 않으며 새배열(사본) ====
+  const arr = ['a','b','c']; //선언문
+  
+  - concat : 배열의 (끝)에 1개 이상의 요소 추가(push 유사)
+    ex) arr.concat(1,2,3); // ['a','b','c',1,2,3] => 배열 arr은 그대로['a','b','c']
+        ▶ concat안에 들어있는 배열은 딱 한번만 분해한다
+        arr.concat(1,['subArr1','subArr2'],2); // ['a','b','c',1,'subArr1','subArr2',2] => ['subArr1','subArr2']배열 분해
+        arr.concat([1,['subArr1','subArr2'],2]);  //['a','b','c',1,['subArr1','subArr2'],2] => 가장 바깥쪽 []배열 분해
+  
+  - slice : 배열의 일부만 가져옴
+    const arr = [10, 20, 30, 40, 50];
+                 0    1   2   3   4
+                -5   -4  -3  -2  -1
+                 
+    ex) arr.slice(3);   //[40,50] 인덱스 3부터 끝까지
+        arr.slice(3,4); //인덱스 3부터 인덱스 4의 바로 앞 (4-1)까지
+        arr.slice(-3);  //[30,40,50]  배열 뒤에서부터 앞쪽으로 인덱스를 찾음
+        arr.(-5,-3);    //[10,20] 인덱스 -5부터 인덱스 -3의 바로 앞(-3-1)까지
+        
+  - splice : 임의의 위치에 요소 추가하거나 제거(수정) s
+    const arr = [1, 2, 3, 4, 5, 6];
+                 0  1  2  3  4  5 
+    ex) arr.splice(3,4);  //[4,5,6]  인덱스 3(포함)부터 요소 4개를 지움 arr.splice(3,3)과 같음
+        arr.splice(1,2,10,20);  //[1,10,20,4,5,6]   인덱스 1부터 요소 2개를 지우고 그 사이에 10, 20을 집어넣음
+        
+  - copyWithin : (ES6 부터 도입) 배열 요소 복사 후 다른위치에 덮어씀
+    const arr = [1, 2, 3, 4, 5, 6]; 
+    ex) arr.copyWithin(1,3);  //[1,4,5,6,5,6]  인덱스 3에서 부터 배열 복사([4,5,6]) 후 인덱스 1부터 덮어씀
+        arr.copyWithin(1,3,5);  //[1,4,5,4,5,6] 인덱스 3에서 부터 5의 바로 앞(4) 배열 [4,5] 복사 후 인덱스 1부터 덮어씀
+        arr.copyWithin(1,-3,-1);  //[1,4,5,4,5,6] 인덱스 -3에서 부터 -1의 바로 앞(-2) 배열 [4,5] 복사 후 인덱스 1부터 덮어씀
+        
+  - fill : 특정값으로 배열 채우기
+    ex) [1,2,3,4,5].fill('x',2);    //[1,2,'x','x','x'] 인덱스 2에서부터 'x'로 채움
+    
+  - reverse : 배열 요소의 순서를 바꿈
+    ex) [1,2,3,4,5].reverse();    //[5,4,3,2,1]
+    
+  - sort : 배열요소의 순서 정리
+    ex) const arr = [{name:'b'},{name:'x'},{name:'s'}];
+        arr.sort(); //[{name:'b'},{name:'x'},{name:'s'}] 객체는 정렬함수를 받야 정렬이 된다
+        arr.sort((a,b) => a.name > b.name); // [{name:'b'},{name:'s'},{name:'x'}]  name프로퍼티의 알파벳순으로 정렬
+        
+ [배열검색]
+    const o = {namee:"Jim"};
+    const arr = [1,2,3,o,["a","b"],"a",3];
+  - indexOf : 앞에서 시작 : (===) 정확히 일치 하는 요소의 첫번쨰 (인덱스) 반환 
+    ex) arr.indexOf(3);     //2
+        arr.indexOf(3, 4);  //6 인덱스(4)부터 시작하여 3을 찾음 
+        
+  - lastIndexOf : 뒤에서 시작 : (===) 정확히 일치 하는 요소의 첫번쨰 (인덱스) 반환 
+    ex) arr.lastIndexOf(3);   //6
+    
+  - findIndex : 조건에 맞는 (인덱스) 반환
+    const arr = [{name:"bye", color:"red"},{name:"hello",color:"blue"}];
+    ex) arr.findIndex(o => o.name ==="hello");    //1
+    
+  - find : 조건에 맞는 (요소) 반환  => find(x,i)에서 x:배열의 요소, i:인덱스  
+    ex) arr.find(o => o.color === "red");   // {name:"bye", color:"red"} 객체 반환
+        arr.find((x,i) => i==0 && x.color === "red");    //{name:"bye", color:"red"} 객체 반환
+  
+  - some/every : some은 맞는 조건이 있으면 즉시 true, every는 모든 조건이 맞아야 true
+    ex) const arr = [4,6,16,54];
+        arr.some(x => x*2 < 100);   //4에서 이미 true
+        arr.every(x => x*2 < 100);  // 54에서 걸림 false
+        
+ [map과 filter]
+  - map : 배열 요소를 변형
+    ex) const fruit = ["apple", "banana"];
+        const color = ["red", "yello"];
+        const fruitInfo = fruit.map((x,i) => ({name:x, color:color[i]}));
+        // fruitInfo = [{name:"apple", color:"red"}, {name:"banana", color:"yello"}];
+        
+  - filter : 배열에 필요한 것들만 남김
+    ex) fruitInfo.filter(x => x.color === "yello");   //[{name:"banana", color:"yello"}]
+    
+ [reduce]   
+  - reduce : 배열을 값하나로 줄임
+    ex) const arr = [1,2,3,4,5];
+        const sum = arr.reduce((firstVal,  x) => firstVal += x ,     0);
+                               //축적값   요소                  초기값설정 : 축적값을 0으로 셋팅 후 x값(배열요소)를 더한다
+                               //만약 초기값이 없다면 축적값의 초기값은 배열의 첫번째 요소 1이 된다.
+                               
+ [join]
+  - 배열을 하나의 문자열로 병합
+    ex) const arr = ["a", "b", "c", "d"];
+        arr.join("+");    //"a+b+c+d"
+        arr.join(",");    //"a,b,c,d"
